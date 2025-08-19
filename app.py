@@ -58,12 +58,13 @@ def get_sheets_data():
         print(f"!!! CRITICAL ERROR in get_sheets_data: {e}")
         return {}, []
 
-tweet_lookup, tweet_ids = get_sheets_data()
-
 @app.route('/')
 def index():
     print("--- INDEX ROUTE HIT ---")
+    tweet_lookup, tweet_ids = get_sheets_data()
+
     if len(tweet_ids) < 2:
+        print("--- Not enough tweet IDs found, showing error page. ---")
         return "Not enough tweets to compare. Please check your Google Sheet."
     
     id1, id2 = random.sample(tweet_ids, 2)
