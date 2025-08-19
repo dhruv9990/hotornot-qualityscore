@@ -6,8 +6,10 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center;  /* This handles horizontal centering */
+    justify-content: center; /* This handles vertical centering */
     min-height: 100vh;
+    box-sizing: border-box; /* Ensures padding doesn't break centering */
 }
 
 h1 {
