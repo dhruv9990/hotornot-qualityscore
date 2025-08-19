@@ -20,9 +20,18 @@
         </div>
     </div>
 
+    <div class="tie-button-container">
+        <button class="tie-button" data-tweet1="{{ tweet1.id }}" data-tweet2="{{ tweet2.id }}">Same Quality</button>
+    </div>
+
     <form id="vote-form" action="/vote" method="post" style="display: none;">
         <input type="hidden" id="winner" name="winner">
         <input type="hidden" id="loser" name="loser">
+    </form>
+
+    <form id="tie-form" action="/tie" method="post" style="display: none;">
+        <input type="hidden" id="tie_tweet1" name="tweet1">
+        <input type="hidden" id="tie_tweet2" name="tweet2">
     </form>
 
     <script>
@@ -30,6 +39,10 @@
         const voteForm = document.getElementById('vote-form');
         const winnerInput = document.getElementById('winner');
         const loserInput = document.getElementById('loser');
+        const tieButton = document.querySelector('.tie-button');
+        const tieForm = document.getElementById('tie-form');
+        const tieTweet1Input = document.getElementById('tie_tweet1');
+        const tieTweet2Input = document.getElementById('tie_tweet2');
 
         document.querySelectorAll('.tweet').forEach(item => {
             item.addEventListener('click', event => {
@@ -38,8 +51,9 @@
                     return;
                 }
                 
-                // Disable the container
+                // Disable the container and button
                 tweetContainer.classList.add('disabled');
+                tieButton.disabled = true;
 
                 const winner = item.dataset.winner;
                 const loser = item.dataset.loser;
@@ -47,6 +61,23 @@
                 loserInput.value = loser;
                 voteForm.submit();
             });
+        });
+
+        tieButton.addEventListener('click', () => {
+            // Prevent multiple clicks
+            if (tweetContainer.classList.contains('disabled')) {
+                return;
+            }
+            
+            // Disable the container and button
+            tweetContainer.classList.add('disabled');
+            tieButton.disabled = true;
+
+            const tweet1 = tieButton.dataset.tweet1;
+            const tweet2 = tieButton.dataset.tweet2;
+            tieTweet1Input.value = tweet1;
+            tieTweet2Input.value = tweet2;
+            tieForm.submit();
         });
     </script>
 </body>

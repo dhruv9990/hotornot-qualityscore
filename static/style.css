@@ -68,6 +68,30 @@ h2 {
     color: #aaa;
 }
 
+.tie-button-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.tie-button {
+    padding: 12px 25px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tie-button:hover {
+    background-color: #f9f9f9;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
 table {
     width: 80%;
     max-width: 1000px;

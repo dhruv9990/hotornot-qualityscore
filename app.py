@@ -104,10 +104,27 @@ def vote():
     if client:
         try:
             sheet = client.open("HotOrNotTweets").worksheet("Votes")
-            sheet.append_row([winner_id, loser_id])
+            # New format: id1, id2, result (winner_id)
+            sheet.append_row([winner_id, loser_id, winner_id])
         except Exception as e:
             print(f"Error writing to sheet: {e}")
             
+    return redirect(url_for('index'))
+
+@app.route('/tie', methods=['POST'])
+def tie():
+    tweet1_id = request.form['tweet1']
+    tweet2_id = request.form['tweet2']
+
+    client = get_google_sheets_client()
+    if client:
+        try:
+            sheet = client.open("HotOrNotTweets").worksheet("Votes")
+            # New format: id1, id2, result ('tie')
+            sheet.append_row([tweet1_id, tweet2_id, 'tie'])
+        except Exception as e:
+            print(f"Error writing tie to sheet: {e}")
+
     return redirect(url_for('index'))
 
 @app.route('/admin')
@@ -117,12 +134,22 @@ def admin():
     if client:
         try:
             sheet = client.open("HotOrNotTweets").worksheet("Votes")
-            votes = sheet.get_all_values()
+            votes_data = sheet.get_all_records() # Use get_all_records for header mapping
             
-            if votes:
-                votes_df = pd.DataFrame(votes, columns=['winner', 'loser'])
-                scores = votes_df['winner'].value_counts().to_dict()
-                pairwise_wins = votes_df.groupby('winner')['loser'].apply(list).to_dict()
+            if votes_data:
+                votes_df = pd.DataFrame(votes_data)
+                # Filter out ties, count only explicit wins
+                wins_df = votes_df[votes_df['result'] != 'tie']
+                scores = wins_df['result'].value_counts().to_dict()
+
+                # Adjust pairwise wins to handle new structure
+                pairwise_wins = {}
+                for index, row in wins_df.iterrows():
+                    winner = row['result']
+                    loser = row['id1'] if row['id2'] == winner else row['id2']
+                    if winner not in pairwise_wins:
+                        pairwise_wins[winner] = []
+                    pairwise_wins[winner].append(loser)
 
         except Exception as e:
             print(f"Error reading votes from sheet: {e}")
