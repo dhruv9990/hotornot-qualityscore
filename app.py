@@ -11,29 +11,41 @@ app = Flask(__name__)
 # --- Google Sheets Setup ---
 def get_google_sheets_client():
     """Establishes connection with Google Sheets."""
+    print("--- Attempting to get Google Sheets client ---")
     try:
         creds_json = os.getenv('GOOGLE_SHEETS_CREDENTIALS')
-        if creds_json is None:
-            print("!!! GOOGLE_SHEETS_CREDENTIALS environment variable not found.")
+        if not creds_json:
+            print("!!! ERROR: GOOGLE_SHEETS_CREDENTIALS environment variable not found or is empty.")
             return None
+        
+        print(f"--- Found credentials of type {type(creds_json)} and length {len(creds_json)} ---")
         creds_dict = json.loads(creds_json)
         scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
+        print("--- Successfully authorized Google Sheets client ---")
         return client
     except Exception as e:
-        print(f"Error connecting to Google Sheets: {e}")
+        print(f"!!! CRITICAL ERROR in get_google_sheets_client: {e}")
         return None
 
 def get_sheets_data():
     """Fetches and processes data from Google Sheets."""
+    print("--- Attempting to get sheets data ---")
     client = get_google_sheets_client()
     if not client:
+        print("!!! ERROR: Could not get Google Sheets client. Aborting data fetch.")
         return {}, []
 
     try:
+        print("--- Opening spreadsheet 'HotOrNotTweets' ---")
         sheet = client.open("HotOrNotTweets").worksheet("Tweets")
+        print("--- Getting all records from 'Tweets' worksheet ---")
         data = sheet.get_all_records()
+        if not data:
+            print("!!! WARNING: No data found in 'Tweets' worksheet.")
+            return {}, []
+        print(f"--- Found {len(data)} records in sheet. ---")
         df = pd.DataFrame(data)
         df.columns = ['id', 'text']
         df['id'] = df['id'].astype(str)
@@ -42,14 +54,8 @@ def get_sheets_data():
         tweet_lookup = pd.Series(df.text.values, index=df.id).to_dict()
         tweet_ids = df['id'].tolist()
         return tweet_lookup, tweet_ids
-    except gspread.exceptions.SpreadsheetNotFound:
-        print("Spreadsheet 'HotOrNotTweets' not found.")
-        return {}, []
-    except gspread.exceptions.WorksheetNotFound:
-        print("Worksheet 'Tweets' not found.")
-        return {}, []
     except Exception as e:
-        print(f"Error getting data from sheet: {e}")
+        print(f"!!! CRITICAL ERROR in get_sheets_data: {e}")
         return {}, []
 
 tweet_lookup, tweet_ids = get_sheets_data()
