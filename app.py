@@ -62,6 +62,7 @@ tweet_lookup, tweet_ids = get_sheets_data()
 
 @app.route('/')
 def index():
+    print("--- INDEX ROUTE HIT ---")
     if len(tweet_ids) < 2:
         return "Not enough tweets to compare. Please check your Google Sheet."
     
@@ -69,6 +70,11 @@ def index():
     tweet1 = {'id': id1, 'text': tweet_lookup.get(id1, "Tweet text not found.")}
     tweet2 = {'id': id2, 'text': tweet_lookup.get(id2, "Tweet text not found.")}
     return render_template('index.html', tweet1=tweet1, tweet2=tweet2)
+
+@app.route('/test')
+def test():
+    print("--- TEST ROUTE HIT ---")
+    return "This is the test page. If you can see this, the Python function is running!"
 
 @app.route('/vote', methods=['POST'])
 def vote():
