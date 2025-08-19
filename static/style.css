@@ -27,9 +27,9 @@ h2 {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 40px;
+    gap: 60px; /* Increased spacing */
     width: 100%;
-    max-width: 900px;
+    max-width: 1000px; /* Increased max-width for more space */
 }
 
 .tweet {
@@ -62,15 +62,9 @@ h2 {
     cursor: default;      /* Changes the cursor to normal */
 }
 
-.vs {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #aaa;
-}
-
 .tie-button-container {
     text-align: center;
-    margin-top: 30px;
+    /* margin-top is no longer needed */
 }
 
 .tie-button {

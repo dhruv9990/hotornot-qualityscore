@@ -14,14 +14,12 @@
         <div class="tweet" data-winner="{{ tweet1.id }}" data-loser="{{ tweet2.id }}">
             <p>{{ tweet1.text }}</p>
         </div>
-        <div class="vs">VS</div>
+        <div class="tie-button-container">
+            <button class="tie-button" data-tweet1="{{ tweet1.id }}" data-tweet2="{{ tweet2.id }}">Same Quality</button>
+        </div>
         <div class="tweet" data-winner="{{ tweet2.id }}" data-loser="{{ tweet1.id }}">
             <p>{{ tweet2.text }}</p>
         </div>
-    </div>
-
-    <div class="tie-button-container">
-        <button class="tie-button" data-tweet1="{{ tweet1.id }}" data-tweet2="{{ tweet2.id }}">Same Quality</button>
     </div>
 
     <form id="vote-form" action="/vote" method="post" style="display: none;">
