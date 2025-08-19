@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot or Not - Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Tweet Rankings</h1>
+    <a href="/" class="back-link">Back to Voting</a>
+    <table>
+        <tr>
+            <th>Rank</th>
+            <th>Tweet</th>
+            <th>Score</th>
+            <th>Ranked Higher Than</th>
+        </tr>
+        {% for tweet, score in scores %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ tweet }}</td>
+            <td>{{ score }}</td>
+            <td>
+                <ul>
+                    {% for loser in pairwise_wins.get(tweet, []) %}
+                    <li>{{ loser }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

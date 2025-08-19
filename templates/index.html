@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot or Not</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Hot or Not</h1>
+    <h2>Which tweet is of higher quality?</h2>
+    <div class="tweet-container">
+        <div class="tweet" data-winner="{{ tweet1.id }}" data-loser="{{ tweet2.id }}">
+            <p>{{ tweet1.text }}</p>
+        </div>
+        <div class="vs">VS</div>
+        <div class="tweet" data-winner="{{ tweet2.id }}" data-loser="{{ tweet1.id }}">
+            <p>{{ tweet2.text }}</p>
+        </div>
+    </div>
+
+    <form id="vote-form" action="/vote" method="post" style="display: none;">
+        <input type="hidden" id="winner" name="winner">
+        <input type="hidden" id="loser" name="loser">
+    </form>
+
+    <script>
+        document.querySelectorAll('.tweet').forEach(item => {
+            item.addEventListener('click', event => {
+                const winner = item.dataset.winner;
+                const loser = item.dataset.loser;
+                document.getElementById('winner').value = winner;
+                document.getElementById('loser').value = loser;
+                document.getElementById('vote-form').submit();
+            });
+        });
+    </script>
+</body>
+</html>
