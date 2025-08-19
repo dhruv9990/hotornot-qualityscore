@@ -5,8 +5,14 @@ import pandas as pd
 import random
 import os
 import json
+import time
 
 app = Flask(__name__)
+
+# --- In-Memory Cache ---
+_cache = {}
+_cache_time = 0
+CACHE_DURATION = 300  # Cache duration in seconds (5 minutes)
 
 # --- Google Sheets Setup ---
 def get_google_sheets_client():
@@ -30,8 +36,15 @@ def get_google_sheets_client():
         return None
 
 def get_sheets_data():
-    """Fetches and processes data from Google Sheets."""
-    print("--- Attempting to get sheets data ---")
+    """Fetches and processes data from Google Sheets, with caching."""
+    global _cache, _cache_time
+
+    # Check if cache is still valid
+    if _cache and (time.time() - _cache_time < CACHE_DURATION):
+        print("--- Using cached data ---")
+        return _cache.get('tweet_lookup', {}), _cache.get('tweet_ids', [])
+
+    print("--- Cache expired or empty, fetching new data ---")
     client = get_google_sheets_client()
     if not client:
         print("!!! ERROR: Could not get Google Sheets client. Aborting data fetch.")
@@ -53,6 +66,11 @@ def get_sheets_data():
         
         tweet_lookup = pd.Series(df.text.values, index=df.id).to_dict()
         tweet_ids = df['id'].tolist()
+
+        # Update cache
+        _cache = {'tweet_lookup': tweet_lookup, 'tweet_ids': tweet_ids}
+        _cache_time = time.time()
+
         return tweet_lookup, tweet_ids
     except Exception as e:
         print(f"!!! CRITICAL ERROR in get_sheets_data: {e}")
