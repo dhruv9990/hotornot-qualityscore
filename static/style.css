@@ -46,12 +46,20 @@ h2 {
     align-items: center;
     justify-content: center;
     text-align: center;
+    white-space: pre-wrap; /* This is the key change */
 }
 
 .tweet:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.08);
     border-color: #bbb;
+}
+
+/* Style for the container when disabled after a vote */
+.tweet-container.disabled .tweet {
+    pointer-events: none; /* Prevents all click events */
+    opacity: 0.5;         /* Fades out the content */
+    cursor: default;      /* Changes the cursor to normal */
 }
 
 .vs {

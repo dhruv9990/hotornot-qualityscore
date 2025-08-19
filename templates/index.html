@@ -26,13 +26,26 @@
     </form>
 
     <script>
+        const tweetContainer = document.querySelector('.tweet-container');
+        const voteForm = document.getElementById('vote-form');
+        const winnerInput = document.getElementById('winner');
+        const loserInput = document.getElementById('loser');
+
         document.querySelectorAll('.tweet').forEach(item => {
             item.addEventListener('click', event => {
+                // Prevent multiple clicks
+                if (tweetContainer.classList.contains('disabled')) {
+                    return;
+                }
+                
+                // Disable the container
+                tweetContainer.classList.add('disabled');
+
                 const winner = item.dataset.winner;
                 const loser = item.dataset.loser;
-                document.getElementById('winner').value = winner;
-                document.getElementById('loser').value = loser;
-                document.getElementById('vote-form').submit();
+                winnerInput.value = winner;
+                loserInput.value = loser;
+                voteForm.submit();
             });
         });
     </script>
