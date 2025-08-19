@@ -13,6 +13,9 @@ def get_google_sheets_client():
     """Establishes connection with Google Sheets."""
     try:
         creds_json = os.getenv('GOOGLE_SHEETS_CREDENTIALS')
+        if creds_json is None:
+            print("!!! GOOGLE_SHEETS_CREDENTIALS environment variable not found.")
+            return None
         creds_dict = json.loads(creds_json)
         scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
